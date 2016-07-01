@@ -1,0 +1,201 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="description" content="statistique loto">
+    <meta name="author" content="remy rondreux et nicolas marchand">
+
+    <title>Loto à qui la douille </title>
+
+    <link rel="icon" href="{{ asset('favicon.ico') }}" />
+    <!-- Bootstrap Core CSS -->
+    <link href="{{ asset('vendor/bootstrap/css/bootstrap.min.css') }}" rel="stylesheet">
+    <link href="{{ asset('vendor/font-awesome/css/font-awesome.min.css') }}" rel="stylesheet">
+    <link href="{{ asset('vendor/bootstrap/css/bootstrap.min.css') }}" rel="stylesheet">
+    <link href="{{ asset('vendor/magnific-popup/magnific-popup.css') }}" rel="stylesheet">
+    <link href="{{ asset('css/creative.min.css') }}" rel="stylesheet">
+    <!-- Custom Fonts -->
+    <link href='https://fonts.googleapis.com/css?family=Open+Sans:300italic,400italic,600italic,700italic,800italic,400,300,600,700,800' rel='stylesheet' type='text/css'>
+    <link href='https://fonts.googleapis.com/css?family=Merriweather:400,300,300italic,400italic,700,700italic,900,900italic' rel='stylesheet' type='text/css'>
+
+    <!-- HTML5 Shim and Respond.js IE8 support of HTML5 elements and media queries -->
+    <!-- WARNING: Respond.js doesn't work if you view the page via file:// -->
+    <!--[if lt IE 9]>
+        <script src="https://oss.maxcdn.com/libs/html5shiv/3.7.0/html5shiv.js"></script>
+        <script src="https://oss.maxcdn.com/libs/respond.js/1.4.2/respond.min.js"></script>
+    <![endif]-->
+<style>
+.boule
+{
+    background-color:#243f85;
+    width: 60px;
+    height: 60px;
+    border-radius: 30px ;
+    display: inline-block;
+    margin: 10px 15px;
+    color: white;
+    text-align:center;
+
+}
+input[type="number"]:focus{
+    outline: none;
+}
+label,td,th{
+  color :#8470FF
+ ;
+}
+input[type=number]::-webkit-inner-spin-button,
+input[type=number]::-webkit-outer-spin-button {
+    -webkit-appearance: none;
+    margin: 0;
+}
+.comp
+{
+     background-color:#FF3447;
+}
+</style>
+<script>
+function verifBoule(bouleChoisie,idBoule)
+{
+   for (var z=1 ; z < 6;z++)
+   {
+      var test = "boule"+z;
+      document.getElementById("alert").innerHTML = "";
+
+      if(document.getElementById(test).value !="" && z != idBoule)
+      {
+        var bouleCompare = document.getElementById(test).value;
+        if (bouleChoisie.value == bouleCompare)
+          {
+             bouleChoisie.value="";
+             document.getElementById("alert").innerHTML = '<p style="color:red"> La boule numero '+idBoule+' doit etre differente</p>';
+             break;
+          }
+      }
+   }
+}
+
+</script>
+</head>
+<body id="page-top">
+
+    <nav id="mainNav" class="navbar navbar-default navbar-fixed-top">
+        <div class="container-fluid">
+            <div class="navbar-header">
+                <a class="navbar-brand page-scroll" href="#page-top">Loto</a>
+            </div>
+        </div>
+    </nav>
+    <header>
+        <div class="header-content">
+            <div class="header-content-inner">
+			<div class="row">
+       {% if maxGain != "false" %} 
+       <label>Gain le plus important remporté à ce jour  : {{ maxGain }} avec la combinaison {{ b1 }};{{ b2 }};{{ b3 }};{{ b4 }};{{ b5 }};{{ bComp }} le {{ maxDateTirage }} </label>
+       {% endif %}
+        <span id="alert"></span>
+        <form  class="form-inline" action="joue" role="form" name='jeuxForm' id='jeuxForm' method="post">
+            <div style="width:900px;" >
+                <label>
+                   <h3> Votre Combinaison </h3>
+                </label>
+                <input class="boule" type="number" min="1.0"  onblur="verifBoule(this,1)"  max="49.0" step="1" id="boule1" tabindex="1" name="boule1" id="boule1" autofocus required>
+                <input class="boule" onblur="verifBoule(this,2)" type="number" min="1.0" max="49.0" step="1" name="boule2"  id="boule2" tabindex="2" required>
+                <input class="boule" type="number" onblur="verifBoule(this,3)" min="1.0" max="49.0" step="1"  id="boule3" name="boule3" tabindex="3" required>
+                <input class="boule"  type="number" onblur="verifBoule(this,4)"  id="boule4" min="1.0" max="49.0" step="1" name="boule4" tabindex="4" required>
+                <input class="boule" type="number" onblur="verifBoule(this,5)"  id="boule5" min="1.0" max="49.0" step="1" name="boule5" tabindex="5" required>
+                <input class="boule comp" type="number" onblur="verifBoule(this)" min="1.0" max="10.0" name="bouleComp" tabindex="6" required>  
+                <button type="submit" class="btn btn-primary">Jouer</button>
+            </div>
+        </form>
+        <div style="background-color:#F5F3F3;width:900px;" >
+        <div class="col-lg-12">    
+ {% if dateTirage != "false" %}
+ <br>
+ <table class="table table-striped table-bordered">
+  <thead>
+  <label> Avec cette combinaison tu aurais gagné le  {{ dateTirage }} </label>
+  </thead>
+  <tbody>
+    <tr>
+      <th scope="row">Nombre de personne ayant trouvé toutes les boules</th>
+      <td>{{ participant1 }}</td>
+        <th scope="row">Gain des personnes qui ont trouvé la combinaison complète</th>
+      <td>{{ gain1 }} euros</td>
+    </tr>
+    <tr>
+      <th scope="row">Nombre de personne ayant trouvé 5 boules </th>
+      <td>{{ participant2 }}</td>
+       <th scope="row">Gain des personnes qui ont trouvé 5 boules </th>
+      <td>{{ gain2 }} euros</td>
+    </tr>
+    <tr>
+      <th scope="row">Nombre de personne ayant trouvé 4 boules </th>
+      <td>{{ participant3 }}</td>
+         <th scope="row">Gain des personnes qui ont trouvé 4 boules </th>
+      <td>{{ gain3 }} euros</td>
+    </tr>
+    <tr>
+      <th scope="row">Nombre de personne ayant trouvé 3 boules </th>
+      <td>{{ participant4 }}</td>
+            <th scope="row">Gain des personnes qui ont trouvé 3 boules </th>
+      <td>{{ gain4 }} euros</td>
+    </tr>
+    <tr>
+      <th scope="row">Nombre de personne ayant trouvé 2 boules </th>
+      <td>{{ participant5 }}</td>
+      <th scope="row">Gain des personnes qui ont trouvé 2 boules </th>
+      <td>{{ gain5 }} euros</td>
+    </tr>
+    <tr>
+      <th scope="row">Nombre de personne ayant trouvé 1 boule </th>
+      <td>{{ participant6 }}</td>
+        <th scope="row">Gain des personnes qui ont trouvé 1 boule </th>
+      <td>{{ gain6 }} euros</td>
+    </tr>
+  </tbody>
+</table>
+{% endif %}
+{% if statistique != "false" %}
+<br>
+<table class="table table-striped table-bordered">
+  <thead>
+    <label> Cette combinaison n'est jamais tombée à ce jour</label> 
+  <tbody>
+    <tr>
+      <th scope="row">Nombre d'aparutions de la boule {{boule1}} en position 1 depuis 2008</th>
+      <td>{{ statBoule1 }} fois</td>
+    </tr>
+    <tr>
+      <th scope="row">Nombre d'aparutions de la boule {{boule2}} en position 2 depuis 2008</th>
+      <td>{{ statBoule2 }} fois</td>
+    </tr>
+    <tr>
+      <th scope="row">Nombre d'aparutions de la boule {{boule3}} en position 3 depuis 2008</th>
+      <td>{{ statBoule3 }} fois</td>
+    </tr>
+    <tr>
+      <th scope="row">Nombre d'aparutions de la boule {{boule4}} en position 4 depuis 2008</th>
+      <td>{{ statBoule4 }} fois</td>
+    </tr>
+    <tr>
+      <th scope="row">Nombre d'aparutions de la boule {{boule5}} en position 5 depuis 2008</th>
+      <td>{{ statBoule5 }} fois</td>
+    </tr>
+    <tr>
+      <th scope="row">Nombre d'aparutions de la boule {{bouleComp}} en position Joker depuis 2008</th>
+      <td>{{ statBouleComp }} fois</td>
+    </tr>
+  </tbody>
+  </table>
+{% endif %}
+        </div>
+</div>
+            </div>
+        </div>
+    </header>
+</body>
+</html>

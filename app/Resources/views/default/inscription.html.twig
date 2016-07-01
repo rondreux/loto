@@ -1,0 +1,66 @@
+<!DOCTYPE html>
+<html>
+<head>
+<title>Loto à qui la douille </title>
+
+<link rel="icon" href="{{ asset('favicon.ico') }}" />
+<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/css/bootstrap.min.css" integrity="sha384-1q8mTJOASx8j1Au+a5WDVnPi2lkFfwwEAa8hDDdjZlpLegxhjVME1fgjWPGmkzs7" crossorigin="anonymous">
+<script src="https://code.jquery.com/jquery-3.0.0.min.js"
+        type="text/javascript"></script>
+</head>
+<body>
+<div class="row">
+    <div class="col-xs-12 col-sm-8 col-md-6 col-sm-offset-2 col-md-offset-3">
+		<form method="post" action="inscript" onSubmit='return validationForm()' role="form">
+			<h2>Inscription</h2>
+			<hr class="colorgraph">
+			<div class="row">
+				<div class="col-xs-12 col-sm-6 col-md-6">
+					<div class="form-group">
+                        <input type="email" name="email" onSubmit='return validationForm()' id="email" class="form-control input-lg" placeholder="Email" tabindex="1" required>
+					</div>
+				</div>
+				<div class="col-xs-12 col-sm-6 col-md-6">
+					<div class="form-group">
+						<input type="password" name="password" id="password" class="form-control input-lg" placeholder="Mot de passe" tabindex="2" required>						
+					</div>
+					<div class="form-group">
+						<input id="cmdp" name="cmdp" class="form-control input-lg"  type="password" autocomplete="off" placeholder="Comfirmation Mot de passe" tabindex="3" required/>
+						<span id="alertMdp"></span>
+					</div>
+					<button type="submit" class="btn btn-success btn-block">Inscription</button>
+					<h4 style='color:red'>{{ errorInscription }}</h4>
+				</div>
+			</div>
+		</form>
+	</div>
+</div>
+<script>
+	var $alertMdp = $("#alertMdp");
+	var $cmdp = $("#cmdp");
+
+	$cmdp.on('change', function() {//compare si les deux mot de passe inscrit sont les mêmes 
+	var cmdp = $(this).val(); 
+	var mdp = $("#password").val(); 
+	$alertMdp.empty();
+	$cmdp.css("background-color", "#FFFFFF");
+	if(cmdp != mdp) 
+	{			
+		$cmdp.css("background-color", "#FE0000");
+		$alertMdp.html('<p style="color:red">Le mot de passe ne correspond pas \340 celui inscrit ci-dessus  .</p>');						
+	}
+	});	
+
+	function validationForm()
+	{
+		var cmdp = $("#cmdp").val(); 
+		var mdp = $("#password").val(); 
+		if(cmdp != mdp) 
+		{
+			return false;
+		}
+		return true;
+	}		
+</script>
+</body>
+</html>
